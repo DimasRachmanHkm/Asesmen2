@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>pencarian data crime & police</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .row-number {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1> Tabel data crime dan polisi</h1>
+  <table id="crimeTable" border="1px">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>Category</th>
+        <th>Outcome Status</th>
+        <th>Location</th>
+        <th>street_id</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    $(document).ready(function() {
+      var apiUrl = "https://data.police.uk/api/crimes-street/all-crime?lat=52.629729&lng=-1.131592&date=2023-01";
+
+
+      $.ajax({
+        url: apiUrl,
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+          var crimeTable = $("#crimeTable tbody");
+
+          $.each(data, function(index, crime) {
+            var category = crime.category;
+            var outcomeStatus = crime.outcome_status ? crime.outcome_status.category : "N/A";
+            var location = crime.location.street.name;
+            var street_id = crime.location.street.id;
+            
+
+            var row = "<tr>" +
+                      "<td class='row-number'>" + (index + 1) + "</td>" +
+                      "<td>" + category + "</td>" +
+                      "<td>" + outcomeStatus + "</td>" +
+                      "<td>" + location + "</td>" +
+                      "<td>" + street_id + "</td>" +
+                      "</tr>";
+
+            crimeTable.append(row);
+          });
+        },
+        error: function(xhr, status, error) {
+          console.log("AJAX Error: " + status + " - " + error);
+        }
+    });
+  });
+  </script>
+</body>
+</html>
